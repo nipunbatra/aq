@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Power Plant Emissions Calculator</title>
-    <h1> Demonstration of a method to estimate emissions from a coal thermal power plant </h1>
-    <h2> Built by UrbanEmissions</h2>
+    <title>Power Plant Emissions Calculator (by UrbanEmissions)</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -21,14 +19,26 @@
             margin-bottom: 20px;
         }
         table {
-            width: 80%;
-            margin: 0 auto;
-            border-collapse: collapse;
-            background-color: #fff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            overflow: hidden;
-        }
+    width: 80%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-radius: 5px;
+}
+
+th, td {
+    padding: 8px 15px;
+    text-align: left;
+}
+
+
+.formula {
+    font-size: 0.85em;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    padding: 2px 4px;
+}
         th, td {
             padding: 12px 20px;
             text-align: left;
@@ -148,56 +158,46 @@
         <th>Output</th>
         <th>Unit</th>
         <th>Value</th>
+        <th>Formula</th>
     </tr>
     <tr>
         <td>100% Generation</td>
         <td>TWh/year</td>
         <td id="generationOutput">10.5</td>
-    </tr>
-    <tr>
-        <td colspan="3"><div class="formula" id="generationFormula">= (Installed capacity / 1000) × 365 × 24</div></td>
+        <td class="formula">= (Capacity / 1000) × 365 × 24</td>
     </tr>
     <tr>
         <td>Coal consumption</td>
         <td>tons/year</td>
         <td id="coalConsumptionOutput">3,393,274</td>
-    </tr>
-    <tr>
-        <td colspan="3"><div class="formula" id="coalConsumptionFormula">= (Coal demand / 1000) × 100% Generation × 10⁶ × Power load factor</div></td>
+        <td class="formula">= (Coal demand / 1000) × Generation × 10⁶ × PLF</td>
     </tr>
     <tr>
         <td>TSP emissions</td>
         <td>tons/year</td>
         <td id="tspEmissionsOutput">11,537</td>
-    </tr>
-    <tr>
-        <td colspan="3"><div class="formula" id="tspEmissionsFormula">= Coal consumption × Ash content × (100% - ESP efficiency)</div></td>
+        <td class="formula">= Coal consumption × Ash content × (1 - ESP eff.)</td>
     </tr>
     <tr>
         <td>PM10 emissions</td>
         <td>tons/year</td>
         <td id="pm10EmissionsOutput">6,922</td>
-    </tr>
-    <tr>
-        <td colspan="3"><div class="formula" id="pm10EmissionsFormula">= TSP emissions × 60%</div></td>
+        <td class="formula">= TSP emissions × 60%</td>
     </tr>
     <tr>
         <td>PM2.5 emissions</td>
         <td>tons/year</td>
         <td id="pm25EmissionsOutput">6,230</td>
-    </tr>
-    <tr>
-        <td colspan="3"><div class="formula" id="pm25EmissionsFormula">= PM10 emissions × 90%</div></td>
+        <td class="formula">= PM10 emissions × 90%</td>
     </tr>
     <tr>
         <td>SO2 emissions</td>
         <td>tons/year</td>
         <td id="so2EmissionsOutput">33,933</td>
-    </tr>
-    <tr>
-        <td colspan="3"><div class="formula" id="so2EmissionsFormula">= Coal consumption × Sulphur content × (100% - FGD efficiency)</div></td>
+        <td class="formula">= Coal consumption × Sulphur content × (1 - FGD eff.)</td>
     </tr>
 </table>
+
 
 <script>
     function calculateValues() {
