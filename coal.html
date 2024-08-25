@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power Plant Emissions Calculator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.2em;
+            color: #444;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px 20px;
+            text-align: left;
+        }
+        th {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+        }
+        td {
+            border-bottom: 1px solid #ddd;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        input[type="range"] {
+            width: 100%;
+        }
+        .value-display {
+            text-align: right;
+            width: 50px;
+            display: inline-block;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .range-container {
+            display: flex;
+            align-items: center;
+        }
+        h2 {
+            text-align: center;
+            color: #444;
+            margin-top: 40px;
+        }
+        .formula {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f9f9f9;
+            padding: 8px 12px;
+            border-radius: 6px;
+            color: #555;
+            margin: 10px 0;
+            font-size: 0.9em;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+<h1>Power Plant Emissions Calculator</h1>
+
+<table>
+    <tr>
+        <th>Parameter</th>
+        <th>Unit</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td>Installed capacity</td>
+        <td>MW</td>
+        <td class="range-container">
+            <input type="range" id="installedCapacity" min="100" max="2000" value="1200" step="100" oninput="calculateValues()">
+            <span class="value-display" id="installedCapacityValue">1200</span>
+        </td>
+    </tr>
+    <tr>
+        <td>Power load factor</td>
+        <td>%</td>
+        <td class="range-container">
+            <input type="range" id="powerLoadFactor" min="10" max="100" value="60" step="1" oninput="calculateValues()">
+            <span class="value-display" id="powerLoadFactorValue">60</span>
+        </td>
+    </tr>
+    <tr>
+        <td>Coal demand</td>
+        <td>kg/MWh</td>
+        <td class="range-container">
+            <input type="range" id="coalDemand" min="300" max="800" value="538" step="1" oninput="calculateValues()">
+            <span class="value-display" id="coalDemandValue">538</span>
+        </td>
+    </tr>
+    <tr>
+        <td>Ash content</td>
+        <td>%</td>
+        <td class="range-container">
+            <input type="range" id="ashContent" min="10" max="50" value="34" step="1" oninput="calculateValues()">
+            <span class="value-display" id="ashContentValue">34</span>
+        </td>
+    </tr>
+    <tr>
+        <td>ESP efficiency</td>
+        <td>%</td>
+        <td class="range-container">
+            <input type="range" id="espEfficiency" min="80" max="100" value="99" step="1" oninput="calculateValues()">
+            <span class="value-display" id="espEfficiencyValue">99</span>
+        </td>
+    </tr>
+    <tr>
+        <td>Sulphur content</td>
+        <td>%</td>
+        <td class="range-container">
+            <input type="range" id="sulphurContent" min="0.1" max="5" value="1" step="0.1" oninput="calculateValues()">
+            <span class="value-display" id="sulphurContentValue">1</span>
+        </td>
+    </tr>
+    <tr>
+        <td>FGD efficiency</td>
+        <td>%</td>
+        <td class="range-container">
+            <input type="range" id="fgdEfficiency" min="0" max="100" value="0" step="1" oninput="calculateValues()">
+            <span class="value-display" id="fgdEfficiencyValue">0</span>
+        </td>
+    </tr>
+</table>
+
+<h2>Calculated Outputs</h2>
+<table>
+    <tr>
+        <th>Output</th>
+        <th>Unit</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td>100% Generation</td>
+        <td>TWh/year</td>
+        <td id="generationOutput">10.5</td>
+    </tr>
+    <tr>
+        <td colspan="3"><div class="formula" id="generationFormula">= (Installed capacity / 1000) × 365 × 24</div></td>
+    </tr>
+    <tr>
+        <td>Coal consumption</td>
+        <td>tons/year</td>
+        <td id="coalConsumptionOutput">3,393,274</td>
+    </tr>
+    <tr>
+        <td colspan="3"><div class="formula" id="coalConsumptionFormula">= (Coal demand / 1000) × 100% Generation × 10⁶ × Power load factor</div></td>
+    </tr>
+    <tr>
+        <td>TSP emissions</td>
+        <td>tons/year</td>
+        <td id="tspEmissionsOutput">11,537</td>
+    </tr>
+    <tr>
+        <td colspan="3"><div class="formula" id="tspEmissionsFormula">= Coal consumption × Ash content × (100% - ESP efficiency)</div></td>
+    </tr>
+    <tr>
+        <td>PM10 emissions</td>
+        <td>tons/year</td>
+        <td id="pm10EmissionsOutput">6,922</td>
+    </tr>
+    <tr>
+        <td colspan="3"><div class="formula" id="pm10EmissionsFormula">= TSP emissions × 60%</div></td>
+    </tr>
+    <tr>
+        <td>PM2.5 emissions</td>
+        <td>tons/year</td>
+        <td id="pm25EmissionsOutput">6,230</td>
+    </tr>
+    <tr>
+        <td colspan="3"><div class="formula" id="pm25EmissionsFormula">= PM10 emissions × 90%</div></td>
+    </tr>
+    <tr>
+        <td>SO2 emissions</td>
+        <td>tons/year</td>
+        <td id="so2EmissionsOutput">33,933</td>
+    </tr>
+    <tr>
+        <td colspan="3"><div class="formula" id="so2EmissionsFormula">= Coal consumption × Sulphur content × (100% - FGD efficiency)</div></td>
+    </tr>
+</table>
+
+<script>
+    function calculateValues() {
+        // Get inputs
+        let installedCapacity = parseFloat(document.getElementById('installedCapacity').value);
+        let powerLoadFactor = parseFloat(document.getElementById('powerLoadFactor').value) / 100;
+        let coalDemand = parseFloat(document.getElementById('coalDemand').value);
+        let ashContent = parseFloat(document.getElementById('ashContent').value) / 100;
+        let espEfficiency = parseFloat(document.getElementById('espEfficiency').value) / 100;
+        let sulphurContent = parseFloat(document.getElementById('sulphurContent').value) / 100;
+        let fgdEfficiency = parseFloat(document.getElementById('fgdEfficiency').value) / 100;
+
+        // Update displayed values
+        document.getElementById('installedCapacityValue').innerText = installedCapacity;
+        document.getElementById('powerLoadFactorValue').innerText = powerLoadFactor * 100;
+        document.getElementById('coalDemandValue').innerText = coalDemand;
+        document.getElementById('ashContentValue').innerText = ashContent * 100;
+        document.getElementById('espEfficiencyValue').innerText = espEfficiency * 100;
+        document.getElementById('sulphurContentValue').innerText = sulphurContent * 100;
+        document.getElementById('fgdEfficiencyValue').innerText = fgdEfficiency * 100;
+
+        // Calculate outputs
+        let generationOutput = (installedCapacity / 1e6) * 365 * 24;
+        let coalConsumptionOutput = (coalDemand / 1000) * generationOutput * 1e6 * powerLoadFactor;
+        let tspEmissionsOutput = coalConsumptionOutput * ashContent * (1 - espEfficiency);
+        let pm10EmissionsOutput = tspEmissionsOutput * 0.6;
+        let pm25EmissionsOutput = pm10EmissionsOutput * 0.9;
+        let so2EmissionsOutput = coalConsumptionOutput * sulphurContent * (1 - fgdEfficiency);
+
+        // Update output elements
+        document.getElementById('generationOutput').innerText = generationOutput.toFixed(2);
+        document.getElementById('coalConsumptionOutput').innerText = coalConsumptionOutput.toFixed(0);
+        document.getElementById('tspEmissionsOutput').innerText = tspEmissionsOutput.toFixed(0);
+        document.getElementById('pm10EmissionsOutput').innerText = pm10EmissionsOutput.toFixed(0);
+        document.getElementById('pm25EmissionsOutput').innerText = pm25EmissionsOutput.toFixed(0);
+        document.getElementById('so2EmissionsOutput').innerText = so2EmissionsOutput.toFixed(0);
+    }
+
+    // Initial calculation
+    calculateValues();
+</script>
+
+</body>
+</html>
